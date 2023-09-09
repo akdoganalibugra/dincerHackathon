@@ -26,9 +26,7 @@ export default function Login() {
   const onLogin = async () => {
     setLoading(true);
     try {
-      const res = await fetchJson(`/users?username=${form.username}`, {
-        method: "GET",
-      });
+      const res = await fetchJson(`/users?username=${form.username}`, {},{},"api1");
       if (res.status >= 200 && res.status < 300) {
         if (res.json[0].username === form.username) {
           toast.success("Login successful");

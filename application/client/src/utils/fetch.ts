@@ -1,6 +1,3 @@
-// const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const API_URL = "http://localhost:3001";
-
 interface ErrorResponse {
   status: number;
   error: string;
@@ -34,14 +31,24 @@ const handleResponse = async (response: Response): Promise<any> => {
 export async function fetchJson(
   url: string,
   options: RequestInit = {},
-  customHeaders: Record<string, string> = {}
+  customHeaders: Record<string, string> = {},
+  type: string
 ) {
+  let API_URL = "";
+  switch (type) {
+    case "api1":
+      API_URL = "http://localhost:3001";
+      break;
+    case "api2":
+      API_URL = "http://localhost:3000";
+      break;
+  }
+
   try {
     const response = await fetch(API_URL + url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        // Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
         ...customHeaders,
       },
       ...options,
