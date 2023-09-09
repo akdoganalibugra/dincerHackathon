@@ -1,0 +1,60 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "admin",
+      "type": "admin",
+      "enabled": true
+    },
+    {
+      "id": 2,
+      "username": "sender",
+      "password": "sender",
+      "type": "sender",
+      "enabled": true
+    },
+    {
+      "id": 3,
+      "username": "receiver",
+      "password": "receiver",
+      "type": "receiver",
+      "enabled": true
+    },
+    {
+      "id": 4,
+      "username": "shipper",
+      "password": "shipper",
+      "type": "shipper",
+      "enabled": true
+    },
+    {
+      "username": "test",
+      "password": "aaaa",
+      "type": "shipper",
+      "enabled": true,
+      "id": "f1349265-e631-a77c-6fd4-6839ec850784"
+    },
+    {
+      "username": "test1",
+      "password": "aaaa",
+      "type": "receiver",
+      "enabled": true,
+      "id": "80d56b2d-5113-d167-82e8-e0a8b1b9d06e"
+    },
+    {
+      "username": "test2",
+      "password": "aaaa",
+      "type": "sender",
+      "enabled": true,
+      "id": "94a499cd-bee1-676e-4b56-2bf931f41def"
+    },
+    {
+      "username": "sender2",
+      "password": "jdfbdf",
+      "type": "sender",
+      "enabled": true,
+      "id": "ee7ba8b0-2d08-d733-f1c5-64b7dce851a8"
+    }
+  ]
+}
