@@ -1,11 +1,11 @@
 const senderList = [
     {
       id: "80d56b2d-5113-d167-82e8-e0a8b1b9d06e",
-      name: "Ford",
+      name: "Amazon",
     },
     {
       id: "80d56b2d-5114-d167-82e8-e0a8b1b9d06e",
-      name: "Mercedes",
+      name: "Shopify",
     },
   ];
 
@@ -51,6 +51,15 @@ export function getUserNameFromLS() {
   const userName = user ? user : "";
   return userName;
 }
+
+export const handleDate = (date: string) => {
+  const newDate = new Date(date).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+  return newDate;
+};
 
 export const orderstatus = [
   "ORDER_CREATED",

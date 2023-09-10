@@ -5,7 +5,7 @@ import { StyledDialog, orderType } from "../receiver/page";
 import CustomTable from "@/components/customTable";
 import { fetchJson } from "@/utils/fetch";
 import { toast } from "react-toastify";
-import { getRecieverName, getSenderName, getUserNameFromLS, orderstatus } from "@/utils";
+import { getRecieverName, getSenderName, getUserNameFromLS, handleDate, orderstatus } from "@/utils";
 import { Button } from "@mui/material";
 import FlexRowAlign from "@/components/flexbox/FlexRowAlign";
 import FlexBox from "@/components/flexbox/Flexbox";
@@ -36,7 +36,7 @@ export default function Sender() {
     const columnShape = [
         {
             Header: "Order Id",
-            accessor: "id",
+            accessor: "orderId",
             Cell: ({ value }: any) => {
                 return (
                     <div >
@@ -106,7 +106,7 @@ export default function Sender() {
             Cell: ({ value }: any) => {
                 return (
                     <div >
-                        {value}
+                        {handleDate(value)}
                     </div>
                 );
             },
@@ -122,7 +122,7 @@ export default function Sender() {
                             color: "#F5F6F8",
                         }}
                         onClick={() => {
-                            setOrderId(row.original.id);
+                            setOrderId(row.original.orderId);
                             setModal(true);
                         }}
                     >
@@ -135,9 +135,9 @@ export default function Sender() {
 
     const getOrders = async () => {
         try {
-            const res = await fetchJson(`/orders`, {}, {}, "api1");
+            const res = await fetchJson(`/orders`, {}, {}, "api2");
             if (res.status >= 200 && res.status < 300) {
-                setOrderData(res.json);
+                setOrderData(res.json.data);
             } else {
                 toast.error(res.message);
             }
@@ -149,9 +149,9 @@ export default function Sender() {
 
     const getOrderDetails = async () => {
         try {
-            const res = await fetchJson(`/orders/${orderId}`, {}, {}, "api1");
+            const res = await fetchJson(`/orders/${orderId}`, {}, {}, "api2");
             if (res.status >= 200 && res.status < 300) {
-                setOrderDetails(res.json);
+                setOrderDetails(res.json.data);
             } else {
                 toast.error(res.message);
             }
@@ -165,15 +165,15 @@ export default function Sender() {
         const status = type === 1 ? "ORDER_RECEIVED" : "SHIPMENT_ASSIGNED"
         try {
             const res = await fetchJson(`/orders/${orderId}`, {
-                method: "PUT",
+                method: "PATCH",
                 body: JSON.stringify({
                     ...orderDetails,
                     status,
-                    updatedAt:new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
                 }),
-            }, {}, "api1");
+            }, {}, "api2");
             if (res.status >= 200 && res.status < 300) {
-                setOrderDetails(res.json);
+                setOrderDetails(res.json.data);
             } else {
                 toast.error(res.message);
             }
@@ -279,34 +279,36 @@ export default function Sender() {
                             alignItems: "center",
                             backgroundColor: orderIndex >= 2 ? '#7fd48c' : "#2cc5bd1f",
                         }}>
-                            {orderIndex < 2 ? (
-                                <FlexBox
-                                    sx={{
-                                        height: '100%',
-                                        flexDirection: "column",
-                                        justifyContent: "space-evenly",
-                                        textAlign: 'center',
-                                        alignItems: "center",
-                                    }}>
-                                    <Span>Assign Shipment</Span>
-                                    <Button
-                                        onClick={() => {
-                                            handleStatus(2);
-                                        }}
-                                        sx={{
-                                            backgroundColor: "#2499EF",
-                                            color: "#F5F6F8",
-                                            "&:hover": {
-                                                backgroundColor: "#2499EF",
-                                            }
-                                        }}
-                                    >
-                                        Received
-                                    </Button>
-                                </FlexBox>
-                            ) : (
+                            {orderIndex >= 2 ? (
                                 <Span>Shipment Assigned</Span>
-                            )}
+                            ) : orderIndex < 2 && orderIndex !==1 ? (
+                                <Span>Awaiting Order</Span>
+                            ) : orderIndex === 1 ?(
+                                <FlexBox
+                                sx={{
+                                    height: '100%',
+                                    flexDirection: "column",
+                                    justifyContent: "space-evenly",
+                                    textAlign: 'center',
+                                    alignItems: "center",
+                                }}>
+                                <Span>Assign Shipment</Span>
+                                <Button
+                                    onClick={() => {
+                                        handleStatus(2);
+                                    }}
+                                    sx={{
+                                        backgroundColor: "#2499EF",
+                                        color: "#F5F6F8",
+                                        "&:hover": {
+                                            backgroundColor: "#2499EF",
+                                        }
+                                    }}
+                                >
+                                    Received
+                                </Button>
+                            </FlexBox>
+                            )  : (null)}
                         </FlexBox>
                         <FlexBox sx={{
                             width: '120px',

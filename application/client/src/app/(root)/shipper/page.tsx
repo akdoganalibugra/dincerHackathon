@@ -5,7 +5,7 @@ import { StyledDialog, orderType } from "../receiver/page";
 import CustomTable from "@/components/customTable";
 import { fetchJson } from "@/utils/fetch";
 import { toast } from "react-toastify";
-import { getRecieverName, getSenderName, getUserNameFromLS, orderstatus } from "@/utils";
+import { getRecieverName, getSenderName, getUserNameFromLS, handleDate, orderstatus } from "@/utils";
 import { Button } from "@mui/material";
 import FlexBox from "@/components/flexbox/Flexbox";
 import { Span } from "@/components/Typography";
@@ -35,7 +35,7 @@ export default function Shipper() {
     const columnShape = [
         {
             Header: "Order Id",
-            accessor: "id",
+            accessor: "orderId",
             Cell: ({ value }: any) => {
                 return (
                     <div >
@@ -105,7 +105,7 @@ export default function Shipper() {
             Cell: ({ value }: any) => {
                 return (
                     <div >
-                        {value}
+                        {handleDate(value)}
                     </div>
                 );
             },
@@ -121,7 +121,7 @@ export default function Shipper() {
                             color: "#F5F6F8",
                         }}
                         onClick={() => {
-                            setOrderId(row.original.id);
+                            setOrderId(row.original.orderId);
                             setModal(true);
                         }}
                     >
@@ -134,9 +134,9 @@ export default function Shipper() {
 
     const getOrders = async () => {
         try {
-            const res = await fetchJson(`/orders`, {}, {}, "api1");
+            const res = await fetchJson(`/orders`, {}, {}, "api2");
             if (res.status >= 200 && res.status < 300) {
-                setOrderData(res.json);
+                setOrderData(res.json.data);
             } else {
                 toast.error(res.message);
             }
@@ -148,9 +148,9 @@ export default function Shipper() {
 
     const getOrderDetails = async () => {
         try {
-            const res = await fetchJson(`/orders/${orderId}`, {}, {}, "api1");
+            const res = await fetchJson(`/orders/${orderId}`, {}, {}, "api2");
             if (res.status >= 200 && res.status < 300) {
-                setOrderDetails(res.json);
+                setOrderDetails(res.json.data);
             } else {
                 toast.error(res.message);
             }
@@ -163,15 +163,15 @@ export default function Shipper() {
     const handleStatus = async () => {
         try {
             const res = await fetchJson(`/orders/${orderId}`, {
-                method: "PUT",
+                method: "PATCH",
                 body: JSON.stringify({
                     ...orderDetails,
                     status:"SHIPMENT_IN_TRANSIT",
                     updatedAt:new Date().toISOString(),
                 }),
-            }, {}, "api1");
+            }, {}, "api2");
             if (res.status >= 200 && res.status < 300) {
-                setOrderDetails(res.json);
+                setOrderDetails(res.json.data);
             } else {
                 toast.error(res.message);
             }
@@ -224,9 +224,9 @@ export default function Shipper() {
                             justifyContent: "center",
                             textAlign: 'center',
                             alignItems: "center",
-                            backgroundColor: orderIndex >= 2 ? '#7fd48c' : "#2cc5bd1f",
+                            backgroundColor: orderIndex >= 1 ? '#7fd48c' : "#2cc5bd1f",
                         }}>
-                            {orderIndex >= 2 ? <Span>Shipment Assigned</Span> : <Span>Assining Waiting</Span>}
+                            {orderIndex >= 1 ? <Span>Shipment Assigned</Span> : <Span>Assining Waiting</Span>}
                         </FlexBox>
                         <FlexBox sx={{
                             width: '120px',
