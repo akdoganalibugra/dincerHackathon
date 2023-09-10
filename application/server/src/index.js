@@ -6,6 +6,10 @@ const v1_OrderRouter = require('./v1/routes/OrderRoutes');
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.get('/', (req, res) => {
+    res.send('TEST TEST');
+});
+
 app.use(bodyParser.json());
 app.use("/api/v1/orders", v1_OrderRouter);
 

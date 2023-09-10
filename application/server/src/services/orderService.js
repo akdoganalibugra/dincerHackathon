@@ -270,8 +270,11 @@ const updateOneOrder = async (orderId, changes) => {
 			console.log('*** Result: committed');
 
 			console.log('\n--> Evaluate Transaction: ReadAsset, function returns "cable" attributes');
-			result = await contract.evaluateTransaction('ReadAsset', orderId);
+			let result = await contract.evaluateTransaction('ReadAsset', orderId);
 			console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+
+			const order = JSON.parse(result);
+            return order;
 
         } finally {
 			// Disconnect from the gateway when the application is closing

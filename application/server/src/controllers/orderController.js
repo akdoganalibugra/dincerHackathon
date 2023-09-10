@@ -89,7 +89,7 @@ const updateOneOrder = async (req, res) => {
             });
     }
     try {
-        const updatedOrder = orderService.updateOneOrder(orderId, body);
+        const updatedOrder = await orderService.updateOneOrder(orderId, body);
         res.send({ status: "OK", data: updatedOrder });
     } catch (error) {
         res
