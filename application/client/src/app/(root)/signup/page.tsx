@@ -33,9 +33,10 @@ export default function Signup() {
         body: JSON.stringify({
           ...form,
           enabled: true,
-          id:uuid(),
+          id: uuid(),
         }),
-      });
+      }, {}, "api1"
+      );
       if (res.status >= 200 && res.status < 300) {
         toast.success(res.message);
         window.location.href = "/login";
