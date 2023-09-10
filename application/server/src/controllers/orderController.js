@@ -37,7 +37,7 @@ const getOneOrder = async (req, res) => {
 const createNewOrder = async (req, res) => {
     const { body } = req;
     if (
-        !body.order ||
+        !body.orderId ||
         !body.status ||
         !body.createdAt
     ) {
@@ -75,7 +75,7 @@ const createNewOrder = async (req, res) => {
     }
 };
 
-const updateOneOrder = (req, res) => {
+const updateOneOrder = async (req, res) => {
     const {
         body,
         params: { orderId }
