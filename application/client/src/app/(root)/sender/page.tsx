@@ -281,7 +281,7 @@ export default function Sender() {
                         }}>
                             {orderIndex >= 2 ? (
                                 <Span>Shipment Assigned</Span>
-                            ) : orderIndex < 2 ? (
+                            ) : orderIndex < 2 && orderIndex !==1 ? (
                                 <Span>Awaiting Order</Span>
                             ) : orderIndex === 1 ?(
                                 <FlexBox

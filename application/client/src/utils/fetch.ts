@@ -40,7 +40,7 @@ export async function fetchJson(
       API_URL = "http://localhost:3001";
       break;
     case "api2":
-      API_URL = "http://localhost:3000/api/v1";
+      API_URL = "http://192.168.1.52:3000/api/v1";
       break;
   }
 
