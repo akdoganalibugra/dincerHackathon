@@ -8,14 +8,14 @@
       "id": "f1349265-e631-a77c-6fd4-6839ec850784"
     },
     {
-      "username": "Ford",
+      "username": "Amazon",
       "password": "sender",
       "type": "sender",
       "enabled": true,
       "id": "80d56b2d-5113-d167-82e8-e0a8b1b9d06e"
     },
     {
-      "username": "Mercedes",
+      "username": "Shopify",
       "password": "sender",
       "type": "sender",
       "enabled": true,

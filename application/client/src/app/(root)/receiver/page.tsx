@@ -10,7 +10,7 @@ import { Button1 } from "@/components/Elements/buttons";
 import uuid from 'react-uuid';
 import { toast } from "react-toastify";
 import { fetchJson } from "@/utils/fetch";
-import { getRecieverName, getSenderName, getUserNameFromLS, orderstatus } from "@/utils";
+import { getRecieverName, getSenderName, getUserNameFromLS, handleDate, orderstatus } from "@/utils";
 import FlexBox from '@/components/flexbox/Flexbox';
 import FlexRowAlign from '@/components/flexbox/FlexRowAlign';
 import { Span } from '@/components/Typography';
@@ -65,7 +65,7 @@ export default function Sender() {
     const columnShape = [
         {
             Header: "Order Id",
-            accessor: "id",
+            accessor: "orderId",
             Cell: ({ value }: any) => {
                 return (
                     <div >
@@ -135,7 +135,7 @@ export default function Sender() {
             Cell: ({ value }: any) => {
                 return (
                     <div >
-                        {value}
+                        {handleDate(value)}
                     </div>
                 );
             },
@@ -151,7 +151,7 @@ export default function Sender() {
                             color: "#F5F6F8",
                         }}
                         onClick={() => {
-                            setOrderId(row.original.id);
+                            setOrderId(row.original.orderId);
                             setModal(true);
                         }}
                     >
@@ -162,30 +162,6 @@ export default function Sender() {
         },
     ];
 
-    const sampleData = [{
-        order_id: "46a500f7-8ec1-43be-8cd6-28ea6ae4f224",
-        assetName: "television",
-        price: 15,
-        receiveId: "80d56b2d-5115-d167-82e8-e0a8b1b9d06e",
-        senderId: "80d56b2d-5113-d167-82e8-e0a8b1b9d06e",
-        quantity: 100,
-        status: "INITIALIZED_LEDGER",
-        createdAt: "10/09/2023, 7:21:56 AM",
-        updatedAt: "10/09/2023, 9:26:12 AM",
-    }, {
-        order_id: "46a500f7-8ec2-43be-8cd6-28ea6ae4f224",
-        assetName: "television",
-        price: 15,
-        receiveId: "80d56b2d-5115-d167-82e8-e0a8b1b9d06e",
-        senderId: "80d56b2d-5113-d167-82e8-e0a8b1b9d06e",
-        quantity: 100,
-        status: "INITIALIZED_LEDGER",
-        createdAt: "10/09/2023, 7:21:56 AM",
-        updatedAt: "10/09/2023, 9:26:12 AM",
-    }
-    ]
-
-
     const [data, setData] = useState<
         { assetName: string; price: number, quantity: number }
     >({
@@ -194,16 +170,31 @@ export default function Sender() {
         quantity: 0,
     });
 
+    const getOrders = async () => {
+        try {
+            const res = await fetchJson(`/orders`, {}, {}, "api2");
+            if (res.status >= 200 && res.status < 300) {
+                setOrderData(res.json.data);
+            } else {
+                toast.error(res.message);
+            }
+        }
+        catch (error: any) {
+            toast.error(error.message);
+        }
+    }
+
     const onSubmit = async () => {
         setLoading(true);
         try {
-            const res = await fetchJson(`/`, {
+            const res = await fetchJson(`/orders`, {
                 method: "POST",
                 body: JSON.stringify({
                     ...data,
                     orderId: uuid(),
-                    senderId: uuid(),
-                    receiverId: uuid(),
+                    assetId:uuid(),
+                    senderId: "80d56b2d-5113-d167-82e8-e0a8b1b9d06e",
+                    receiveId: "80d56b2d-5115-d167-82e8-e0a8b1b9d06e",
                     status: "ORDER_CREATED",
                     trackingInfo: [],
                     createdAt: new Date().toISOString(),
@@ -212,6 +203,8 @@ export default function Sender() {
             }, {}, "api2");
             if (res.status >= 200 && res.status < 300) {
                 toast.success("Recorded successful");
+                setTabValue("1");
+                getOrders();
             } else {
                 toast.error(res.message);
             }
@@ -222,26 +215,12 @@ export default function Sender() {
             setLoading(false);
         }
     };
-
-    const getOrders = async () => {
-        try {
-            const res = await fetchJson(`/orders`, {}, {}, "api1");
-            if (res.status >= 200 && res.status < 300) {
-                setOrderData(res.json);
-            } else {
-                toast.error(res.message);
-            }
-        }
-        catch (error: any) {
-            toast.error(error.message);
-        }
-    }
-
+   
     const getOrderDetails = async () => {
         try {
-            const res = await fetchJson(`/orders/${orderId}`, {}, {}, "api1");
+            const res = await fetchJson(`/orders/${orderId}`, {}, {}, "api2");
             if (res.status >= 200 && res.status < 300) {
-                setOrderDetails(res.json);
+                setOrderDetails(res.json.data);
             } else {
                 toast.error(res.message);
             }
@@ -254,15 +233,15 @@ export default function Sender() {
     const handleStatus = async () => {
         try {
             const res = await fetchJson(`/orders/${orderId}`, {
-                method: "PUT",
+                method: "PATCH",
                 body: JSON.stringify({
                     ...orderDetails,
                     status: "SHIPMENT_RECEIVED",
                     updatedAt:new Date().toISOString(),
                 }),
-            }, {}, "api1");
+            }, {}, "api2");
             if (res.status >= 200 && res.status < 300) {
-                setOrderDetails(res.json);
+                setOrderDetails(res.json.data);
             } else {
                 toast.error(res.message);
             }
@@ -283,7 +262,7 @@ export default function Sender() {
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // onSubmit();
+        onSubmit();
     };
 
     const orderIndex = orderDetails && orderstatus.findIndex(e => e === orderDetails!.status)
@@ -408,7 +387,6 @@ export default function Sender() {
                                     label="Asset Name"
                                     value={data.assetName}
                                     labelColor="ph_blue"
-                                    required={true}
                                     color={data.assetName === "" ? "ph_graywhite" : "ph_blue_light"}
                                     htmlFor="assetName"
                                     type="text"
@@ -425,12 +403,12 @@ export default function Sender() {
                                     label="Price"
                                     value={data.price}
                                     labelColor="ph_blue"
-                                    required={true}
                                     color={data.price === 0 ? "ph_graywhite" : "ph_blue_light"}
                                     htmlFor="price"
                                     type="number"
                                     id="price"
                                     name="price"
+                                    min="0"
                                     placeholder="Input Price"
                                     onChange={(e) => {
                                         setData({ ...data, price: Number(e.target.value) });
@@ -442,12 +420,12 @@ export default function Sender() {
                                     label="Quantitiy"
                                     value={data.quantity}
                                     labelColor="ph_blue"
-                                    required={true}
                                     color={data.quantity === 0 ? "ph_graywhite" : "ph_blue_light"}
                                     htmlFor="quantity"
                                     type="number"
                                     id="quantity"
                                     name="quantity"
+                                    min="0"
                                     placeholder="Input Quantitiy"
                                     onChange={(e) => {
                                         setData({ ...data, quantity: Number(e.target.value) });

@@ -14,6 +14,7 @@ interface InputProps {
   color: string;
   labelColor: string;
   props?: any;
+  min?:string;
 }
 
 export default function Input({
@@ -28,6 +29,7 @@ export default function Input({
   required = false,
   color,
   labelColor,
+  min="0",
   ...props
 }: InputProps) {
   return (
@@ -45,6 +47,7 @@ export default function Input({
           type={type}
           value={value}
           name={name}
+          min={min}
           id={id}
           placeholder={placeholder}
           onChange={onChange}
