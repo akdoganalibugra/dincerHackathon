@@ -1,37 +1,71 @@
 "use client";
-import { useAppSelector } from "@/redux/hooks";
 import CustomTable from '@/components/customTable';
-import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { useState, useEffect, SyntheticEvent, FormEvent } from "react";
-import { Tab } from "@mui/material";
+import { Dialog, Tab, styled } from "@mui/material";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
+import { Button } from '@mui/material'
 import Navbar from "@/components/Nabar";
 import Input from "@/components/Elements/input";
-import { Button } from "@/components/Elements/buttons";
+import { Button1 } from "@/components/Elements/buttons";
 import uuid from 'react-uuid';
 import { toast } from "react-toastify";
 import { fetchJson } from "@/utils/fetch";
+import { getRecieverName, getSenderName, getUserNameFromLS, orderstatus } from "@/utils";
+import FlexBox from '@/components/flexbox/Flexbox';
+import FlexRowAlign from '@/components/flexbox/FlexRowAlign';
+import { Span } from '@/components/Typography';
 
-interface orderType {
+export interface orderType {
+    id: string,
     assetName: string;
     price: number;
     quantity: number;
+    receiveId: string;
+    senderId: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
+export const StyledDialog = styled(Dialog)(() => ({
+    "& .MuiDialog-paper": {
+        borderRadius: 8,
+        padding:"16px",
+        width: "100%",
+        height: "150px",
+    },
+}));
 
 export default function Sender() {
-    const { form } = useAppSelector((state) => state.user)
+    const username = getUserNameFromLS()
     const [tabValue, setTabValue] = useState<string>("1");
     const [loading, setLoading] = useState<boolean>(false);
+    const [orderId, setOrderId] = useState<string>("");
     const [orderData, setOrderData] = useState<orderType[]>([]);
+    const [orderDetails, setOrderDetails] = useState<orderType>({
+        id: "",
+        assetName: "",
+        price: 0,
+        quantity: 0,
+        receiveId: "",
+        senderId: "",
+        status: "",
+        createdAt: "",
+        updatedAt: "",
+    });
+    const [modal, setModal] = useState<boolean>(false);
 
     const handleTabChange = (_: SyntheticEvent, value: string) =>
         setTabValue(value);
 
+    const onClose = () => {
+        setModal(false);
+    };
+
     const columnShape = [
         {
             Header: "Order Id",
-            accessor: "order_id",
-            minWidth: 200,
+            accessor: "id",
             Cell: ({ value }: any) => {
                 return (
                     <div >
@@ -40,7 +74,117 @@ export default function Sender() {
                 );
             },
         },
+        {
+            Header: "Asset Name",
+            accessor: "assetName",
+            Cell: ({ value }: any) => {
+                return (
+                    <div >
+                        {value}
+                    </div>
+                );
+            },
+        },
+        {
+            Header: "Price",
+            accessor: "price",
+            Cell: ({ value }: any) => {
+                return (
+                    <div >
+                        {value}
+                    </div>
+                );
+            },
+        },
+        {
+            Header: "Quantity",
+            accessor: "quantity",
+            Cell: ({ value }: any) => {
+                return (
+                    <div >
+                        {value}
+                    </div>
+                );
+            },
+        },
+        {
+            Header: "receive Id",
+            accessor: "receiveId",
+            Cell: ({ value }: any) => {
+                return (
+                    <div >
+                        {getRecieverName(value)}
+                    </div>
+                );
+            },
+        },
+        {
+            Header: "sender Id",
+            accessor: "senderId",
+            Cell: ({ value }: any) => {
+                return (
+                    <div >
+                        {getSenderName(value)}
+                    </div>
+                );
+            },
+        },
+        {
+            Header: "Created Date",
+            accessor: "createdAt",
+            Cell: ({ value }: any) => {
+                return (
+                    <div >
+                        {value}
+                    </div>
+                );
+            },
+        },
+        {
+            Header: "Actions",
+            Cell: ({ row }: any) => {
+                return (
+                    <Button
+                        variant="contained"
+                        sx={{
+                            backgroundColor: "#2499EF",
+                            color: "#F5F6F8",
+                        }}
+                        onClick={() => {
+                            setOrderId(row.original.id);
+                            setModal(true);
+                        }}
+                    >
+                        Details
+                    </Button>
+                );
+            },
+        },
     ];
+
+    const sampleData = [{
+        order_id: "46a500f7-8ec1-43be-8cd6-28ea6ae4f224",
+        assetName: "television",
+        price: 15,
+        receiveId: "80d56b2d-5115-d167-82e8-e0a8b1b9d06e",
+        senderId: "80d56b2d-5113-d167-82e8-e0a8b1b9d06e",
+        quantity: 100,
+        status: "INITIALIZED_LEDGER",
+        createdAt: "10/09/2023, 7:21:56 AM",
+        updatedAt: "10/09/2023, 9:26:12 AM",
+    }, {
+        order_id: "46a500f7-8ec2-43be-8cd6-28ea6ae4f224",
+        assetName: "television",
+        price: 15,
+        receiveId: "80d56b2d-5115-d167-82e8-e0a8b1b9d06e",
+        senderId: "80d56b2d-5113-d167-82e8-e0a8b1b9d06e",
+        quantity: 100,
+        status: "INITIALIZED_LEDGER",
+        createdAt: "10/09/2023, 7:21:56 AM",
+        updatedAt: "10/09/2023, 9:26:12 AM",
+    }
+    ]
+
 
     const [data, setData] = useState<
         { assetName: string; price: number, quantity: number }
@@ -60,7 +204,7 @@ export default function Sender() {
                     orderId: uuid(),
                     senderId: uuid(),
                     receiverId: uuid(),
-                    status: "INITIALIZED_LEDGER",
+                    status: "ORDER_CREATED",
                     trackingInfo: [],
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
@@ -81,7 +225,7 @@ export default function Sender() {
 
     const getOrders = async () => {
         try {
-            const res = await fetchJson(`/`, {}, {}, "api2");
+            const res = await fetchJson(`/orders`, {}, {}, "api1");
             if (res.status >= 200 && res.status < 300) {
                 setOrderData(res.json);
             } else {
@@ -93,18 +237,61 @@ export default function Sender() {
         }
     }
 
-    // useEffect(() => {
-    //     getOrders();
-    // }, [])
+    const getOrderDetails = async () => {
+        try {
+            const res = await fetchJson(`/orders/${orderId}`, {}, {}, "api1");
+            if (res.status >= 200 && res.status < 300) {
+                setOrderDetails(res.json);
+            } else {
+                toast.error(res.message);
+            }
+        }
+        catch (error: any) {
+            toast.error(error.message);
+        }
+    }
+
+    const handleStatus = async () => {
+        try {
+            const res = await fetchJson(`/orders/${orderId}`, {
+                method: "PUT",
+                body: JSON.stringify({
+                    ...orderDetails,
+                    status: "SHIPMENT_RECEIVED",
+                    updatedAt:new Date().toISOString(),
+                }),
+            }, {}, "api1");
+            if (res.status >= 200 && res.status < 300) {
+                setOrderDetails(res.json);
+            } else {
+                toast.error(res.message);
+            }
+        }
+        catch (error: any) {
+            toast.error(error.message);
+        }
+    }
+
+    useEffect(() => {
+        getOrders();
+    }, [])
+
+    useEffect(() => {
+        orderId && getOrderDetails();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [orderId])
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         // onSubmit();
     };
 
+    const orderIndex = orderDetails && orderstatus.findIndex(e => e === orderDetails!.status)
+
+
     return (
         <div>
-            <Navbar title='Reciever Portal' title2={form.username} />
+            <Navbar title='Reciever Portal' title2={username} />
             <main className="flex min-h-screen flex-col items-center p-9">
                 <TabContext value={tabValue}>
                     <TabList onChange={handleTabChange} aria-label="lab API tabs example">
@@ -116,6 +303,103 @@ export default function Sender() {
                             columnShape={columnShape}
                             data={orderData}
                         />
+                        <StyledDialog
+                            open={modal}
+                            onClose={onClose}
+                            sx={{
+                                zIndex: 1300,
+                                "& .css-15ziy8l-MuiPaper-root-MuiDialog-paper": {
+                                    bgcolor: "background.default",
+                                    px: 10,
+                                    py: 5,
+                                },
+                            }}
+                        >
+                            <FlexRowAlign gap={2} sx={{
+                                width: '100%',
+                                height: '100%',
+                                alignItems: "center",
+                            }}>
+                                <FlexBox sx={{
+                                    width: '120px',
+                                    height: '120px',
+                                    flexDirection: "column",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    backgroundColor: "#7fd48c",
+                                }}>
+                                    <Span>
+                                        Order Placed
+                                    </Span>
+                                </FlexBox>
+                                <FlexBox sx={{
+                                    width: '120px',
+                                    height: '120px',
+                                    flexDirection: "column",
+                                    justifyContent: "center",
+                                    textAlign: 'center',
+                                    alignItems: "center",
+                                    backgroundColor: orderIndex > 0 ? '#7fd48c' : "#2cc5bd1f",
+                                }}>
+                                    <Span>
+                                        {orderIndex > 0 ? "Order Acceppted" : "Order Waiting"}
+                                    </Span>
+                                </FlexBox>
+                                <FlexBox sx={{
+                                    width: '120px',
+                                    height: '120px',
+                                    flexDirection: "column",
+                                    justifyContent: "center",
+                                    textAlign: 'center',
+                                    alignItems: "center",
+                                    backgroundColor: orderIndex > 1 ? '#7fd48c' : "#2cc5bd1f",
+                                }}>
+                                    <Span>
+                                        {orderIndex > 1 ? "Shipment Acceppted" : "Shipment Waiting"}
+                                    </Span>
+                                </FlexBox>
+                                <FlexBox sx={{
+                                    width: '120px',
+                                    height: '120px',
+                                    flexDirection: "column",
+                                    justifyContent: "center",
+                                    textAlign: 'center',
+                                    alignItems: "center",
+                                    backgroundColor: orderIndex === 4 ? '#7fd48c' : "#2cc5bd1f",
+                                }}>
+                                    {orderIndex === 4 ? (
+                                        <Span>Shipment Received</Span>
+                                    ) : orderIndex < 2 ? (
+                                        <Span>Awaiting Shipment</Span>
+                                    ) : (
+                                        <FlexBox
+                                            sx={{
+                                                height: '100%',
+                                                flexDirection: "column",
+                                                justifyContent: "space-evenly",
+                                                textAlign: 'center',
+                                                alignItems: "center",
+                                            }}>
+                                            <Span>Accept Shipment</Span>
+                                            <Button
+                                                onClick={() => {
+                                                    handleStatus();
+                                                }}
+                                                sx={{
+                                                    backgroundColor: "#2499EF",
+                                                    color: "#F5F6F8",
+                                                    "&:hover": {
+                                                        backgroundColor: "#2499EF",
+                                                    }
+                                                }}
+                                            >
+                                                Received
+                                            </Button>
+                                        </FlexBox>
+                                    )}
+                                </FlexBox>
+                            </FlexRowAlign>
+                        </StyledDialog>
                     </TabPanel>
                     <TabPanel value="2">
                         <form onSubmit={handleSubmit}>
@@ -169,12 +453,12 @@ export default function Sender() {
                                         setData({ ...data, quantity: Number(e.target.value) });
                                     }}
                                 />
-                                <Button type="submit" text="Submit" loading={loading} />
+                                <Button1 type="submit" text="Submit" loading={loading} />
                             </div>
                         </form>
                     </TabPanel>
                 </TabContext>
             </main>
-        </div>
+        </div >
     )
 }

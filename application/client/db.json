@@ -1,60 +1,99 @@
 {
   "users": [
     {
-      "id": 1,
       "username": "admin",
       "password": "admin",
       "type": "admin",
-      "enabled": true
-    },
-    {
-      "id": 2,
-      "username": "sender",
-      "password": "sender",
-      "type": "sender",
-      "enabled": true
-    },
-    {
-      "id": 3,
-      "username": "receiver",
-      "password": "receiver",
-      "type": "receiver",
-      "enabled": true
-    },
-    {
-      "id": 4,
-      "username": "shipper",
-      "password": "shipper",
-      "type": "shipper",
-      "enabled": true
-    },
-    {
-      "username": "test",
-      "password": "aaaa",
-      "type": "shipper",
       "enabled": true,
       "id": "f1349265-e631-a77c-6fd4-6839ec850784"
     },
     {
-      "username": "test1",
-      "password": "aaaa",
-      "type": "receiver",
+      "username": "Ford",
+      "password": "sender",
+      "type": "sender",
       "enabled": true,
       "id": "80d56b2d-5113-d167-82e8-e0a8b1b9d06e"
     },
     {
-      "username": "test2",
-      "password": "aaaa",
+      "username": "Mercedes",
+      "password": "sender",
       "type": "sender",
       "enabled": true,
-      "id": "94a499cd-bee1-676e-4b56-2bf931f41def"
+      "id": "80d56b2d-5114-d167-82e8-e0a8b1b9d06e"
     },
     {
-      "username": "sender2",
-      "password": "jdfbdf",
-      "type": "sender",
+      "username": "Walmart",
+      "password": "receiver",
+      "type": "receiver",
       "enabled": true,
-      "id": "ee7ba8b0-2d08-d733-f1c5-64b7dce851a8"
+      "id": "80d56b2d-5115-d167-82e8-e0a8b1b9d06e"
+    },
+    {
+      "username": "Ikea",
+      "password": "receiver",
+      "type": "receiver",
+      "enabled": true,
+      "id": "80d56b2d-5116-d167-82e8-e0a8b1b9d06e"
+    },
+    {
+      "username": "DHL",
+      "password": "shipper",
+      "type": "shipper",
+      "enabled": true,
+      "id": "80d56b2d-5117-d167-82e8-e0a8b1b9d06e"
+    },
+    {
+      "username": "Dinçer",
+      "password": "shipper",
+      "type": "shipper",
+      "enabled": true,
+      "id": "80d56b2d-5118-d167-82e8-e0a8b1b9d06e"
+    }
+  ],
+  "orders": [
+    {
+      "id": "46a500f7-8ec1-43be-8cd6-28ea6ae4f224",
+      "assetName": "television",
+      "price": 15,
+      "receiveId": "80d56b2d-5115-d167-82e8-e0a8b1b9d06e",
+      "senderId": "80d56b2d-5113-d167-82e8-e0a8b1b9d06e",
+      "quantity": 100,
+      "status": "SHIPMENT_IN_TRANSIT",
+      "createdAt": "10/09/2023, 7:21:56 AM",
+      "updatedAt": "10/09/2023, 9:26:12 AM"
+    },
+    {
+      "id": "46a500f7-8ec2-44be-8cd6-28ea6ae4f224",
+      "assetName": "Computer",
+      "price": 15,
+      "quantity": 100,
+      "receiveId": "80d56b2d-5115-d167-82e8-e0a8b1b9d06e",
+      "senderId": "80d56b2d-5113-d167-82e8-e0a8b1b9d06e",
+      "status": "SHIPMENT_IN_TRANSIT",
+      "createdAt": "10/09/2023, 7:21:56 AM",
+      "updatedAt": "10/09/2023, 9:26:12 AM"
+    },
+    {
+      "id": "46a500f7-8ec2-43be-8cd6-28ea6ae4f224",
+      "assetName": "Laptop",
+      "price": 15,
+      "quantity": 100,
+      "receiveId": "80d56b2d-5115-d167-82e8-e0a8b1b9d06e",
+      "senderId": "80d56b2d-5113-d167-82e8-e0a8b1b9d06e",
+      "status": "SHIPMENT_RECEIVED",
+      "createdAt": "10/09/2023, 7:21:56 AM",
+      "updatedAt": "10/09/2023, 9:26:12 AM"
+    },
+    {
+      "id": "46a500f7-8ec3-43be-8cd6-28ea6ae4f224",
+      "assetName": "mouse",
+      "price": 15,
+      "receiveId": "80d56b2d-5115-d167-82e8-e0a8b1b9d06e",
+      "senderId": "80d56b2d-5113-d167-82e8-e0a8b1b9d06e",
+      "quantity": 100,
+      "status": "SHIPMENT_RECEIVED",
+      "createdAt": "10/09/2023, 7:21:56 AM",
+      "updatedAt": "10/09/2023, 9:26:12 AM"
     }
   ]
 }

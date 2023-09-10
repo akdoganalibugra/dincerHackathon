@@ -1,0 +1,16 @@
+application/client/node_modules/*
+application/server/node_modules/*
+gateway-test/node_modules/*
+gateway-test/wallet/*
+application/server/test-network/*
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# System Files
+**/.DS_Store
