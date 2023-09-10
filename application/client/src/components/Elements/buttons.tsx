@@ -9,7 +9,7 @@ interface ButtonProps {
   loading?: boolean;
 }
 
-export function Button({
+export function Button1({
   type = "button",
   className = "",
   text,

@@ -1,7 +1,7 @@
 "use client";
 import { toast } from "react-toastify";
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { Button } from "@/components/Elements/buttons";
+import { Button1 } from "@/components/Elements/buttons";
 import Input from "@/components/Elements/input";
 import MailSvg from "@/svg/mail";
 import { fetchJson } from "@/utils/fetch";
@@ -149,7 +149,7 @@ export default function Signup() {
                 >
                   Login
                 </a>
-                <Button type="submit" text="Sign up" loading={loading} />
+                <Button1 type="submit" text="Sign up" loading={loading} />
               </div>
             </form>
             <div className="mt-7 flex justify-center items-center text-center ">

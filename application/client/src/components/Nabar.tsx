@@ -19,7 +19,7 @@ const Navbar = ({
                 <div className="text-base font-medium text-gray-500">
                     {title2 ? title2 : ""}
                 </div>
-                <a href="/login" className="text-base font-medium text-gray-500 hover:text-gray-900 ml-4">
+                <a href="/login" className="text-base font-medium text-gray-500 hover:text-gray-900 ml-4" onClick={() => localStorage.removeItem('userName')}>
                     Logout
                 </a>
             </FlexRowAlign>

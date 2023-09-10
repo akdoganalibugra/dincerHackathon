@@ -51,6 +51,7 @@ const CustomTable: FC<CustomTableProps> = (props) => {
 
   return (
     <Box>
+      {data.length <= 0 ? <div style={{ textAlign: 'center', marginTop: '20px' }}>No data for Display</div> :
         <Table
           {...getTableProps()}
           sx={{ borderSpacing: "0 0.7rem", borderCollapse: "separate" }}
@@ -87,51 +88,51 @@ const CustomTable: FC<CustomTableProps> = (props) => {
             {page.map((row: any, index: number) => {
               prepareRow(row);
               return (
-                  // eslint-disable-next-line react/jsx-key
-                  <TableRow
-                    {...row.getRowProps()}
-                    onClick={rowClick && rowClick(row.original)}
-                    sx={{
-                      position: "relative",
-                      opacity: 1,
-                      cursor: "pointer",
-                      backgroundColor: "background.paper",
-                      "& td:first-of-type": {
-                        borderLeft: "0",
-                        borderTopLeftRadius: "8px",
-                        borderBottomLeftRadius: "8px",
-                      },
-                      "& td:last-of-type": {
-                        borderRight: "0",
-                        borderTopRightRadius: "8px",
-                        borderBottomRightRadius: "8px",
-                      },
-                    }}
-                  >
-                    {row.cells.map((cell: any, index: number) => {
-                      return (
-                        <TableCell
-                          key={index}
-                          align="left"
-                          {...cell.getCellProps()}
-                          sx={{
-                            border: 0,
-                            fontSize: 13,
-                            fontWeight: 500,
-                            color: "text.secondary",
-                            "&:first-of-type": { paddingLeft: "16px" },
-                            "&:last-child": { paddingRight: "16px" },
-                          }}
-                        >
-                          {cell.render("Cell")}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
+                // eslint-disable-next-line react/jsx-key
+                <TableRow
+                  {...row.getRowProps()}
+                  onClick={rowClick && rowClick(row.original)}
+                  sx={{
+                    position: "relative",
+                    opacity: 1,
+                    cursor: "pointer",
+                    backgroundColor: "background.paper",
+                    "& td:first-of-type": {
+                      borderLeft: "0",
+                      borderTopLeftRadius: "8px",
+                      borderBottomLeftRadius: "8px",
+                    },
+                    "& td:last-of-type": {
+                      borderRight: "0",
+                      borderTopRightRadius: "8px",
+                      borderBottomRightRadius: "8px",
+                    },
+                  }}
+                >
+                  {row.cells.map((cell: any, index: number) => {
+                    return (
+                      <TableCell
+                        key={index}
+                        align="left"
+                        {...cell.getCellProps()}
+                        sx={{
+                          border: 0,
+                          fontSize: 13,
+                          fontWeight: 500,
+                          color: "text.secondary",
+                          "&:first-of-type": { paddingLeft: "16px" },
+                          "&:last-child": { paddingRight: "16px" },
+                        }}
+                      >
+                        {cell.render("Cell")}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
               );
             })}
           </TableBody>
-        </Table>
+        </Table>}
     </Box>
   );
 };
